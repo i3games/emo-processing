@@ -6,6 +6,8 @@ import processing.serial.*;
 
 Serial serial;  
 String received;  
+String timestamp;
+String message;
 PrintWriter output;
 String filename = "logfile.txt";
 boolean logging = false;
@@ -18,6 +20,7 @@ void setup()
 
 void draw()
 {
+  
   background(0); 
   fill(255);
   text("robot state log", 10, 30);
@@ -29,8 +32,15 @@ void draw()
   }
   if (serial != null && serial.available() > 0) {  
     received = serial.readString();
-    output.println(received);
-    print(received);             
+    
+    // format of the electron logger timestamp
+    // [2016-09-11 22:45:34:0273] [info] #results Number of faces found: 0
+    // we don't have wall clock milliseconds in processing    
+    
+    timestamp = "[" + year() + "-" + (month() >= 10 ? month() : "0" + month()) + "-" + (day() >= 10 ? day() : "0" + day()) + " " + hour() + ":" + minute() + ":" + second() + "]"; 
+    message = timestamp + " " + received; 
+    output.println(message);
+    print(message);             
   }
 }
 
