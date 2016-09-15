@@ -46,7 +46,7 @@ void draw()
 
 void keyPressed() {
   if (key == 's' || key == 'S') {
-    String portName = Serial.list()[0];
+    String portName = Serial.list()[2];
     serial = new Serial(this, portName, 115200);
     filename = "" + year() + month() + day() + "-" + hour() + minute() + second() + "-log.txt"; 
     output = createWriter(filename);  
