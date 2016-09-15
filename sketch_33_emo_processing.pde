@@ -1,49 +1,58 @@
 /**
- * Simple Read
- * 
- * Read data from the serial port and change the color of a rectangle
- * when a switch connected to a Wiring or Arduino board is pressed and released.
- * This example works with the Wiring / Arduino program that follows below.
+ * Logging the robot's state
  */
-
 
 import processing.serial.*;
 
-Serial myPort;  // Create object from Serial class
-int val;      // Data received from the serial port
+Serial serial;  
+String received;  
+PrintWriter output;
+String filename = "logfile.txt";
+boolean logging = false;
 
 void setup() 
 {
-  size(200, 200);
-  // I know that the first port in the serial list on my mac
-  // is always my  FTDI adaptor, so I open Serial.list()[0].
-  // On Windows machines, this generally opens COM1.
-  // Open whatever port is the one you're using.
-  String portName = Serial.list()[0];
-  myPort = new Serial(this, portName, 9600);
+  size(400, 600);
+  print(Serial.list());
 }
 
 void draw()
 {
-  if ( myPort.available() > 0) {  // If data is available,
-    val = myPort.read();         // read it and store it in val
+  background(0); 
+  fill(255);
+  text("robot state log", 10, 30);
+  text("press (s) to start", 10, 50);
+  text("press (q) to quit", 10, 70);
+  if(logging) {
+    fill(0, 255, 23);
+    text("logging", 10, 90);   
   }
-  background(255);             // Set background to white
-  if (val == 0) {              // If the serial value is 0,
-    fill(0);                   // set fill to black
-  } 
-  else {                       // If the serial value is not 0,
-    fill(204);                 // set fill to light gray
+  if (serial != null && serial.available() > 0) {  
+    received = serial.readString();
+    output.println(received);
+    print(received);             
   }
-  rect(50, 50, 100, 100);
 }
 
-
+void keyPressed() {
+  if (key == 's' || key == 'S') {
+    String portName = Serial.list()[0];
+    serial = new Serial(this, portName, 115200);
+    filename = "" + year() + month() + day() + "-" + hour() + minute() + second() + "-log.txt"; 
+    output = createWriter(filename);  
+    logging = true;
+  } else if (key == 'q' || key == 'Q') {
+    output.flush();  // Writes the remaining data to the file
+    output.close();  // Finishes the file
+    serial = null;
+    logging = false;
+  }
+}
 
 /*
 
 // Wiring / Arduino Code
-// Code for sensing a switch status and writing the value to the serial port.
+// Code for sensing a switch status and writing the received to the serial port.
 
 int switchPin = 4;                       // Switch connected to pin 4
 
