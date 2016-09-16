@@ -37,7 +37,7 @@ void draw()
     // [2016-09-11 22:45:34:0273] [info] #results Number of faces found: 0
     // we don't have wall clock milliseconds in processing    
     
-    timestamp = "[" + year() + "-" + (month() >= 10 ? month() : "0" + month()) + "-" + (day() >= 10 ? day() : "0" + day()) + " " + hour() + ":" + minute() + ":" + second() + "]"; 
+    timestamp = "[" + nf(year(), 4) + "-" + nf(month(), 2) + "-" + nf(day(), 2) + " " + nf(hour(), 2) + ":" + nf(minute(), 2) + ":" + nf(second(), 2) + "]"; 
     message = timestamp + " " + received; 
     output.println(message);
     print(message);             
@@ -48,7 +48,7 @@ void keyPressed() {
   if (key == 's' || key == 'S') {
     String portName = Serial.list()[2];
     serial = new Serial(this, portName, 115200);
-    filename = "" + year() + month() + day() + "-" + hour() + minute() + second() + "-log.txt"; 
+    filename = "" + nf(year(), 4) + nf(month(), 2) + nf(day(), 2) + "-" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2) + "-log.txt"; 
     output = createWriter(filename);  
     logging = true;
   } else if (key == 'q' || key == 'Q') {
